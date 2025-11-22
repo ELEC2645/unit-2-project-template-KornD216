@@ -16,8 +16,6 @@ static void select_menu_item(int input);/* run code based on user's choice */
 static void go_back_to_main(void);      /* wait for 'b'/'B' to continue */
 static int  is_integer(const char *s);  /* validate integer string */
 
-static float get_user_float(void); // TESTING Get Float and Validate
-
 int main(void)
 {
     /* this will run forever until we call exit(0) in select_menu_item() */
@@ -140,53 +138,4 @@ static int is_integer(const char *s)
         s++;
     }
     return 1;
-}
-
-// A modified is_integer function but for float with its own logic
-static int is_float(const char *s){
-    if (!s || !*s) return 0;
-
-    // Ignore the positive/negative symbol at the start
-    if (*s == '+' || *s == '-') s++;
-
-    int has_digits = 0;
-    int has_point = 0;
-
-    while (*s) {
-        if (isdigit((unsigned char)*s)){
-            has_digits = 1;
-        } else if (*s == '.'){
-            if (has_point) return 0; // will return 0 if a decimal point already exist
-            has_point = 1; // if not, then we tick the flag
-        } else {
-            return 0; // if it reaches this stage, then it's probably invalid
-        }
-        s++;
-    }
-    return has_digits;
-}
-
-// a modified version of get int, but for float
-static float get_user_float(void){
-    char buf[128];
-    int valid_input = 0;
-    float value = 0.0f;
-
-    do{
-        printf("Enter Value: ");
-        if (!fgets(buf, sizeof(buf), stdin)){
-            puts("\nInput Error. Exiting.");
-            exit(1);
-        }
-
-        buf[strcspn(buf, "\r\n")] = '0';
-
-        if (!is_float(buf)){
-            printf("Enter Float!\n");
-            valid_input = 0;
-        } else {
-            valid_input = 1;
-        }
-    } while (!valid_input);
-    return value;
 }
