@@ -10,4 +10,6 @@ void schmitt_output_menu(void);
 float para_res(float R);
 float find_r_feedback(float thresholdMargin, float R, float Vsat);
 
+
+
 #endif

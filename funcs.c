@@ -4,6 +4,8 @@
 void schmitt_feedback_menu(void) {
     printf("\n--- Schmitt Trigger Component Conqueror ---\n");
     printf("\nLet's Determine Your Feedback Resistor\n");
+    printf("Begin By Providing Your Exisiting Values\n");
+    printf("What is the resistance of your matching resistors?\n");
 }
 
 void sallen_key_menu(void) {
