@@ -74,19 +74,11 @@ static void select_menu_item(int input)
 {
     switch (input) {
         case 1:
-            menu_item_1();
+            schmitt_menu();
             go_back_to_main();
             break;
         case 2:
             menu_item_2();
-            go_back_to_main();
-            break;
-        case 3:
-            menu_item_3();
-            go_back_to_main();
-            break;
-        case 4:
-            menu_item_4();
             go_back_to_main();
             break;
         default:
@@ -97,16 +89,16 @@ static void select_menu_item(int input)
 
 static void print_main_menu(void)
 {
-    printf("\n----------- Main menu -----------\n");
-    printf("\n"
-           "\t\t\t\t\t\t\n"
-           "\t1. Menu item 1\t\t\n"
-           "\t2. Menu item 2\t\t\n"
-           "\t3. Menu item 3\t\t\n"
-           "\t4. Menu item 4\t\t\n"
-           "\t5. Exit\t\t\t\t\n"
-           "\t\t\t\t\t\t\n");
-    printf("---------------------------------------------\n");
+    printf("\n");
+    printf("####  #     ####  ####  ####   ##   ####   ##\n");
+    printf("#     #     #     #        #    #   #  #    #\n");
+    printf("####  #     ####  #     ####    #   #  #    #\n");
+    printf("#     #     #     #     #       #   #  #    #\n");
+    printf("####  ####  ####  ####  ####  ####  ####  ####\n");
+    printf("\n_____+++ ELEC2101 CONQUERER SYSTEM V1 +++_____\n\n");
+    printf("1. Schmitt Trigger Assistance\n");
+    printf("2. Sallen Key Filter Designer\n");
+    printf("3. Exit\n");
 }
 
 static void go_back_to_main(void)
