@@ -74,11 +74,17 @@ static void select_menu_item(int input)
 {
     switch (input) {
         case 1:
-            schmitt_menu();
+            // Display the Schmitt Menu with 3 Options
+            schmitt_feedback_menu();
             go_back_to_main();
             break;
         case 2:
-            menu_item_2();
+            // Display the Schmitt Menu with 3 Options
+            schmitt_output_menu();
+            go_back_to_main();
+            break;
+        case 3:
+            sallen_key_menu();
             go_back_to_main();
             break;
         default:
@@ -96,9 +102,11 @@ static void print_main_menu(void)
     printf("#     #     #     #     #       #   #  #    #\n");
     printf("####  ####  ####  ####  ####  ####  ####  ####\n");
     printf("\n_____+++ ELEC2101 CONQUERER SYSTEM V1 +++_____\n\n");
-    printf("1. Schmitt Trigger Assistance\n");
+    printf("\n--Conquering Operational Amplifier Since 2025--\n\n");
+    printf("1. Schmitt Trigger Feedback Designer\n");
+    printf("2. Schmitt Trigger Output Signal Preview\n");
     printf("2. Sallen Key Filter Designer\n");
-    printf("3. Exit\n");
+    printf("4. Exit\n");
 }
 
 static void go_back_to_main(void)

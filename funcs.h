@@ -1,10 +1,10 @@
 #ifndef FUNCS_H
 #define FUNCS_H
 
-void schmitt_menu(void);
-void menu_item_2(void);
-void menu_item_3(void);
-void menu_item_4(void);
+void sallen_key_menu(void);
+
+void schmitt_feedback_menu(void);
+void schmitt_output_menu(void);
 
 // These functions are used in Schmitt Trigger Menu
 float para_res(float R);

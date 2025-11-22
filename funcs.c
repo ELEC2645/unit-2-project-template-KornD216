@@ -1,28 +1,18 @@
 #include <stdio.h>
 #include "funcs.h"
 
-void schmitt_menu(void) {
-    printf("\n--- Schmitt Trigger Conqueror ---\n");
-    printf("\nHow can we help you today?\n");
-    printf("1. Determine The Feedback Resistor\n");
-    printf("2. Determine The Output Signal\n");
-    printf("3. I misclicked, take me back home.\n");
-    /* you can call a function from here that handles menu 1 */
+void schmitt_feedback_menu(void) {
+    printf("\n--- Schmitt Trigger Component Conqueror ---\n");
+    printf("\nLet's Determine Your Feedback Resistor\n");
 }
 
-void menu_item_2(void) {
-    printf("\n>> Menu 2\n");
-    printf("\nSome code here does something useful\n");
+void sallen_key_menu(void) {
+    printf("\n--- Sallen-Key Conqueror ---\n");
+    printf("\nLet's Build a Sallen Key Filter\n");
     /* you can call a function from here that handles menu 2 */
 }
 
-void menu_item_3(void) {
-    printf("\n>> Menu 3\n");
-    printf("\nSome code here does something useful\n");
-    /* you can call a function from here that handles menu 3 */
-}
-
-void menu_item_4(void) {
+void schmitt_output_menu(void) {
     printf("\n>> Menu 4\n");
     printf("\nSome code here does something useful\n");
     /* you can call a function from here that handles menu 4 */
