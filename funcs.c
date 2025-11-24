@@ -7,16 +7,18 @@
 void schmitt_feedback_menu(void) {
     printf("\n--- Schmitt Trigger Component Conqueror ---\n");
     printf("\nLet's Determine Your Feedback Resistor\n");
-    printf("Begin By Providing Your Exisiting Values\n");
+    printf("Begin By Providing Your Exisiting Values\n\n");
     printf("What is the resistance of your matching resistors?\n\n");
-    float Rparallel = para_res(get_user_float());
+    float R = get_user_float();
+    float Rparallel = para_res(R);
     printf("\nWhat is the voltage of your positive supply rail?\n\n");
     float Vsat = get_user_float();
     printf("\nWhat is your desired threshold margin?\n\n");
     float thresholdmarg = get_user_float();
-    printf("-----CALCULATING-----\n");
+    printf("\n-----+++CALCULATING+++-----\n\n");
     float rfeed = find_r_feedback(thresholdmarg, Rparallel, Vsat);
-    printf("%.2f", Vsat);
+    // Now We Know All The Require Variables To Calculate The Feedback Resistor
+    print_schmitt(thresholdmarg, R, Vsat, rfeed);
 }
 
 void sallen_key_menu(void) {
@@ -79,7 +81,7 @@ float get_user_float(void){
             exit(1);
         }
 
-        buf[strcspn(buf, "\r\n")] = '0';
+        buf[strcspn(buf, "\r\n")] = '\0';
 
         if (!is_float(buf)){
             printf("Enter Float!\n");
@@ -88,5 +90,21 @@ float get_user_float(void){
             valid_input = 1;
         }
     } while (!valid_input);
+    value = strtof(buf, NULL);
     return value;
+}
+
+// This function prints the diagram of schmitt trigger with the desired values
+void print_schmitt(float thresholdMargin, float R, float Vsat, float Rfeed){
+    printf("+Vin ----|=====|\n");
+    printf("         | OP  |--+-- Vout\n");
+    printf("+Vs      | AMP |  |\n");
+    printf(" |    +--|=====|  |\n");
+    printf(" R    |           |\n");
+    printf(" |----+---Rfeed---+\n");
+    printf(" R\n");
+    printf(" |\n");
+    printf("-Vs\n\n");
+    printf("Given Vs = %.2fV, R = %.2f Ohm, with your desired thershold margin of %.2fV\n\n",Vsat,R,thresholdMargin);
+    printf("Your Feedback Resistor (Rfeed) Must be: %.2f Ohm\n", Rfeed);
 }
