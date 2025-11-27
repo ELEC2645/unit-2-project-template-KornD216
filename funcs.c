@@ -49,7 +49,12 @@ int is_float(const char *s){
     if (!s || !*s) return 0;
 
     // Ignore the positive/negative symbol at the start
-    if (*s == '+' || *s == '-') s++;
+    if (*s == '+') s++;
+
+    // No negative number!
+    if (*s == '-') return 0;
+    // No zero!
+    if (*s == '0' && *(s+1)  != '.') return 0;
 
     int has_digits = 0;
     int has_point = 0;
@@ -65,17 +70,18 @@ int is_float(const char *s){
         }
         s++;
     }
+
     return has_digits;
 }
 
 // a modified version of get int, but for float
 float get_user_float(void){
-    char buf[128];
+    char buf[15];
     int valid_input = 0;
     float value = 0.0f;
 
     do{
-        printf("Enter Value: ");
+        printf("Enter Positive Float Value: ");
         if (!fgets(buf, sizeof(buf), stdin)){
             puts("\nInput Error. Exiting.");
             exit(1);
@@ -84,7 +90,10 @@ float get_user_float(void){
         buf[strcspn(buf, "\r\n")] = '\0';
 
         if (!is_float(buf)){
-            printf("Enter Float!\n");
+            printf("Invalid :( Try again!\n");
+            valid_input = 0;
+        } else if (strlen(buf) > 10) {
+            printf("Too Long!\n");
             valid_input = 0;
         } else {
             valid_input = 1;
