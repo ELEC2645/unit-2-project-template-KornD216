@@ -105,7 +105,7 @@ static void print_main_menu(void)
     printf("\n--Conquering Operational Amplifier Since 2025--\n\n");
     printf("1. Schmitt Trigger Feedback Designer\n");
     printf("2. Schmitt Trigger Output Signal Preview\n");
-    printf("2. Sallen Key Filter Designer\n");
+    printf("3. Sallen Key Filter Designer\n");
     printf("4. Exit\n");
 }
 

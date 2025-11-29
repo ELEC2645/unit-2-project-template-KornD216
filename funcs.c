@@ -4,6 +4,8 @@
 #include <ctype.h>
 #include "funcs.h"
 
+#define PI 3.141593
+
 void schmitt_feedback_menu(void) {
     printf("\n--- Schmitt Trigger Component Conqueror ---\n");
     printf("\nLet's Determine Your Feedback Resistor\n");
@@ -21,18 +23,91 @@ void schmitt_feedback_menu(void) {
     print_schmitt(thresholdmarg, R, Vsat, rfeed);
 }
 
+void schmitt_output_menu(void){
+}
+
 void sallen_key_menu(void) {
     printf("\n--- Sallen-Key Conqueror ---\n");
     printf("\nLet's Build a Sallen Key Filter\n");
-    /* you can call a function from here that handles menu 2 */
+    // Ask for signal characteristic
+    printf("Select Your Signal Characteristic\n\n");
+    printf("1. Chebyshev (Steeper Roll-off, Ripple)\n");
+    printf("2. Butterworth (Smooth, Shallower Roll-off)\n");
+    int character = enter_choice();
+    // Ask for filter's pass type
+    printf("Select Your Filter\n\n");
+    printf("1. High-pass\n");
+    printf("2. Low-pass\n");
+    int pass_type = enter_choice();
+    print_sallenkey(pass_type);
+    printf("\n\n!!! Consider This Topology For Your Passband !!!\n\n");
+    // Ask for specifications:
+    printf("What is your resistance for RB?\n");
+    float RB = get_user_float();
+    printf("What is your desired cut-off freuqnecy fc?\n");
+    float fc = get_user_float();
+    printf("What is your desired resistance for R1 and R2?\n");
+    float R = get_user_float();
+    switch (character) {
+        case 1: // For Chebyshev
+            chebyshev_sub(RB,fc,R,pass_type);
+            break;
+        case 2: // For Butterworth
+            butterworth_sub(RB,fc,R,pass_type);
+            break;
+    }
+}
+void chebyshev_sub(float RB, float fc, float R, int pass_type){
+    // Ask for ripple
+    printf("What is your desired ripple?\n");
+    printf("1. 0.5 dB\n");
+    printf("2. 2 dB\n");
+    int ripple_choice = enter_choice();
+    // Assign the appropriate gain and the appropriate Chebyshev normalizing factor
+    float K;
+    float Cn;
+    switch (ripple_choice) {
+        case 1: // For 0.5 dB
+            K = 1.842;
+            if (pass_type == 1){ // High pass
+                Cn = 0.812;
+            } else { // Low pass
+                Cn = 1.231;
+            }
+            break;
+        case 2: // For 2 dB
+            K = 2.114;
+            if (pass_type == 1){ // High pass
+                Cn = 1.103;
+            } else { // Low pass
+                Cn = 0.907;
+            }
+            break;
+    }
+    // Calculate RA
+    float RA = RB * (K-1);
+    // calculate C
+    float C = 1 / (2 * PI * fc * R * Cn);
+    // Summarize and output the findings
+    printf("\n\nWith the given specification based on this topology:\n");
+    print_sallenkey(pass_type);
+    sallen_key_summarize(RA,C,K);
 }
 
-void schmitt_output_menu(void) {
-    printf("\n>> Menu 4\n");
-    printf("\nSome code here does something useful\n");
-    /* you can call a function from here that handles menu 4 */
+void butterworth_sub(float RB, float fc, float R, int pass_type){
+    float K = 1.586;
+    float RA = RB * (K-1);
+    float C = 1 / (2 * PI * fc * R);
+    printf("\n\nWith the given specification based on this topology:\n");
+    print_sallenkey(pass_type);
+    sallen_key_summarize(RA,C,K);
 }
 
+void sallen_key_summarize(float RA, float C, float K){
+    printf("\nYou would need a gain of K = %.3f\n",K);
+    printf("Making your RA = %f Ohms\n", RA);
+    printf("Consequently, the capacitance for C1 and C2 would be C = %fF\n\n", C);
+}
 // this function determines the parallel resistance of two resistors
 float para_res(float R) {
     float parres = (R * R)/(R + R);
@@ -116,4 +191,70 @@ void print_schmitt(float thresholdMargin, float R, float Vsat, float Rfeed){
     printf("-Vs\n\n");
     printf("Given Vs = %.2fV, R = %.2f Ohm, with your desired thershold margin of %.2fV\n\n",Vsat,R,thresholdMargin);
     printf("Your Feedback Resistor (Rfeed) Must be: %.2f Ohm\n", Rfeed);
+}
+
+void print_sallenkey(int type){
+    if (type == 2){ //low pass
+        printf("\n=============LOW PASS SALLEN-KEY=============\n\n");
+        printf("            +-----C1----------------+\n");
+        printf("            |                       |\n");
+        printf("+Vin ---R1--+-R2-+--------|=====|   |\n");
+        printf("                 |        | OP  |---+--Vout\n");
+        printf("                 |        | AMP |   |\n");
+        printf("                C2     +--|=====|  RA \n");
+        printf("                 |     |            |\n");
+        printf("                 =     +------------+\n");
+        printf("                                    |\n");
+        printf("                                   RB\n");
+        printf("                                    |\n");
+        printf("                                    =\n");
+    } else { // high pass
+        printf("\n=============HIGH PASS SALLEN-KEY=============\n\n");
+        printf("            +-----R1----------------+\n");
+        printf("            |                       |\n");
+        printf("+Vin ---C1--+-C2-+--------|=====|   |\n");
+        printf("                 |        | OP  |---+--Vout\n");
+        printf("                 |        | AMP |   |\n");
+        printf("                R2     +--|=====|  RA \n");
+        printf("                 |     |            |\n");
+        printf("                 =     +------------+\n");
+        printf("                                    |\n");
+        printf("                                   RB\n");
+        printf("                                    |\n");
+        printf("                                    =\n");
+    }
+}
+static int enter_choice(void)
+{
+    enum { MENU_ITEMS = 2};
+    char buf[128];
+    int valid_input = 0;
+    int value = 0;
+
+    do {
+        printf("\nSelect item: ");
+        if (!fgets(buf, sizeof(buf), stdin)) {
+            /* EOF or error; bail out gracefully */
+            puts("\nInput error. Exiting.");
+            exit(1);
+        }
+
+        // strip trailing newline
+        buf[strcspn(buf, "\r\n")] = '\0';
+
+        if (!is_float(buf)) {
+            printf("Enter an integer!\n");
+            valid_input = 0;
+        } else {
+            value = (int)strtol(buf, NULL, 10);
+            if (value >= 1 && value <= MENU_ITEMS) {
+                valid_input = 1;
+            } else {
+                printf("Invalid menu item!\n");
+                valid_input = 0;
+            }
+        }
+    } while (!valid_input);
+
+    return value;
 }
