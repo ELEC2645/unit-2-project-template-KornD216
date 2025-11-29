@@ -48,7 +48,7 @@ float find_r_feedback(float thresholdMargin, float R, float Vsat){
 int is_float(const char *s){
     if (!s || !*s) return 0;
 
-    // Ignore the positive/negative symbol at the start
+    // Ignore the positive symbol at the start
     if (*s == '+') s++;
 
     // No negative number!
