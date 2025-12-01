@@ -4,7 +4,7 @@
 #include <ctype.h>
 #include "funcs.h"
 
-#define PI 3.141593
+#define PI 3.142L
 
 void schmitt_feedback_menu(void) {
     printf("\n--- Schmitt Trigger Component Conqueror ---\n");
@@ -87,7 +87,7 @@ void chebyshev_sub(float RB, float fc, float R, int pass_type){
     // Calculate RA
     float RA = RB * (K-1);
     // calculate C
-    float C = 1 / (2 * PI * fc * R * Cn);
+    long double C = 1.0L / (2.0L * PI * fc * R * Cn);
     // Summarize and output the findings
     printf("\n\nWith the given specification based on this topology:\n");
     print_sallenkey(pass_type);
@@ -97,16 +97,16 @@ void chebyshev_sub(float RB, float fc, float R, int pass_type){
 void butterworth_sub(float RB, float fc, float R, int pass_type){
     float K = 1.586;
     float RA = RB * (K-1);
-    float C = 1 / (2 * PI * fc * R);
+    long double C = 1.0L / (2.0L * PI * fc * R);
     printf("\n\nWith the given specification based on this topology:\n");
     print_sallenkey(pass_type);
     sallen_key_summarize(RA,C,K);
 }
 
-void sallen_key_summarize(float RA, float C, float K){
+void sallen_key_summarize(float RA, long double C, float K){
     printf("\nYou would need a gain of K = %.3f\n",K);
     printf("Making your RA = %f Ohms\n", RA);
-    printf("Consequently, the capacitance for C1 and C2 would be C = %fF\n\n", C);
+    printf("Consequently, the capacitance for C1 and C2 would be C = %Le F\n\n", C);
 }
 // this function determines the parallel resistance of two resistors
 float para_res(float R) {

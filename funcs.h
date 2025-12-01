@@ -17,7 +17,7 @@ int is_float(const char *s);
 void print_sallenkey(int type);
 void chebyshev_sub(float RB, float fc, float R, int pass_type);
 void butterworth_sub(float RB, float fc, float R, int pass_type);
-void sallen_key_summarize(float RA, float C, float K);
+void sallen_key_summarize(float RA, long double C, float K);
 
 static int enter_choice(void);
 
