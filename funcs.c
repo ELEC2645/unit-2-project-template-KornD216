@@ -71,25 +71,38 @@ void schmitt_output_menu(void){
     rewind(file); // go back to start
 
     // Initialize Array
-    Signal *inputSignalArray = malloc(signal_count * sizeof(Signal));
-    if (inputSignalArray == NULL){ // Handle bad malloc
+    Signal *SignalArray = malloc(signal_count * sizeof(Signal));
+    if (SignalArray == NULL){ // Handle bad malloc
         printf("Memory Allocation Failed, sorry!\n");
     }
 
     // Read and calculate output signal
     for (int i = 0; i < signal_count; i++){
-        fscanf(file,"%f", &inputSignalArray[i].inputAmp);
-        printf("%f\n",inputSignalArray[i].inputAmp);
-        inputSignalArray[i].outputAmp = schmitt_output(inputSignalArray[i].inputAmp, threshold, margin, recentState);
+        fscanf(file,"%f", &SignalArray[i].inputAmp);
+        SignalArray[i].outputAmp = schmitt_output(SignalArray[i].inputAmp, threshold, margin, recentState);
         // Update the recent State
-        if (inputSignalArray[i].outputAmp == 1){
+        if (SignalArray[i].outputAmp == 1){
             recentState = 1;
         } else {
             recentState = 0;
         }
     }
     fclose(file); //finished reading!
-    printf("Continues Here");
+    free(SignalArray);
+    printf("\n\n READING AND CALCULATION COMPLTED \n\n");
+    /* 
+    Now, print out the input and output side by side
+    */
+    printf("\nInput Signal | Output Signal\n\n");
+    for (int i = 0; i < signal_count; i++){
+        if(SignalArray[i].outputAmp == 1){
+            printf("%f | HIGH\n", SignalArray[i].inputAmp);
+        } else {
+            printf("%f | LOW\n", SignalArray[i].inputAmp);
+        }
+    }
+    printf("Time Series Ended");
+
 }
 
 int schmitt_output(float inputAmp, float nomThreshold, float margin, int recentState){
