@@ -24,8 +24,90 @@ void schmitt_feedback_menu(void) {
 }
 
 void schmitt_output_menu(void){
+    printf("\n--- Schmitt Trigger Output Previewer ---\n\n");
+    printf("What is your nominal threshold?\n");
+    float threshold = get_user_float();
+    printf("What is your noise margin?\n");
+    float margin = get_user_float();
+    printf("\nPlease import your time series!\n");
+    char filename[256];
+    FILE *file = NULL; // initialize a file variable first
+    do {
+        printf("Enter filename: ");
+        // Takes a string input, make sure fgets and allocate!
+        if (fgets(filename, sizeof(filename), stdin) != NULL){
+            filename[strcspn(filename, "\n")] = '\0'; // remove newline symbol and cut the string there
+        }
+        // Now we open the file (in turn, checking if the destination exists)
+        file = fopen(filename, "r");
+        if (!file){ //not a valid file
+            printf("Error, file not found! Try again.\n");
+        }
+    } while(!file); //repeats until a valid file is given
+
+    printf("File Found! Reading...\n\n\n");
+    // Create a struct called signal
+    typedef struct{
+        float inputAmp; //input amplitude
+        int outputAmp; //output signal
+    } Signal;
+
+    /*
+    With everything ready, we can begin reading the content of the file into the array
+    */
+    float currentInputSignal; // temp reader
+    float recentState;
+    int signal_count = 0;
+    while(fscanf(file, "%f", &currentInputSignal) == 1) {
+        if (signal_count == 0){ // For assigning initial Stage
+            if (currentInputSignal < threshold){ // Initial State is low
+                recentState = 0;
+            } else {
+                recentState = 1;
+            }
+        }
+         signal_count++; //we need to know how many lines so we could use malloc
+    }
+    rewind(file); // go back to start
+
+    // Initialize Array
+    Signal *inputSignalArray = malloc(signal_count * sizeof(Signal));
+    if (inputSignalArray == NULL){ // Handle bad malloc
+        printf("Memory Allocation Failed, sorry!\n");
+    }
+
+    // Read and calculate output signal
+    for (int i = 0; i < signal_count; i++){
+        fscanf(file,"%f", &inputSignalArray[i].inputAmp);
+        printf("%f\n",inputSignalArray[i].inputAmp);
+        inputSignalArray[i].outputAmp = schmitt_output(inputSignalArray[i].inputAmp, threshold, margin, recentState);
+        // Update the recent State
+        if (inputSignalArray[i].outputAmp == 1){
+            recentState = 1;
+        } else {
+            recentState = 0;
+        }
+    }
+    fclose(file); //finished reading!
+    printf("Continues Here");
 }
 
+int schmitt_output(float inputAmp, float nomThreshold, float margin, int recentState){
+    float newThreshold;
+    // Adjust the threshold according to the previous stage
+    // If previous stage is low
+    if (recentState == 0){
+        newThreshold = nomThreshold + (float)margin/2;
+    } else { // Previous stage is high
+        newThreshold = nomThreshold - (float)margin/2;
+    }
+    // Calculate the output
+    if (inputAmp > newThreshold){ // if input is higher than threshold
+        return 1; // high signal
+    } else { // if input is lower than threshold
+        return 0; // low signal
+    }
+}
 void sallen_key_menu(void) {
     printf("\n--- Sallen-Key Conqueror ---\n");
     printf("\nLet's Build a Sallen Key Filter\n");

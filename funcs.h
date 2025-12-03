@@ -19,6 +19,8 @@ void chebyshev_sub(float RB, float fc, float R, int pass_type);
 void butterworth_sub(float RB, float fc, float R, int pass_type);
 void sallen_key_summarize(float RA, long double C, float K);
 
+int schmitt_output(float inputAmp, float nomThreshold, float margin, int recentState);
+
 static int enter_choice(void);
 
 #endif
