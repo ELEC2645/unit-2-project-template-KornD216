@@ -88,7 +88,6 @@ void schmitt_output_menu(void){
         }
     }
     fclose(file); //finished reading!
-    free(SignalArray);
     printf("\n\n READING AND CALCULATION COMPLTED \n\n");
     /* 
     Now, print out the input and output side by side
@@ -102,10 +101,11 @@ void schmitt_output_menu(void){
         }
     }
     printf("Time Series Ended");
-
+    free(SignalArray);
 }
 
 int schmitt_output(float inputAmp, float nomThreshold, float margin, int recentState){
+    // nomThreshold is the nominal threshold without any positive feedback
     float newThreshold;
     // Adjust the threshold according to the previous stage
     // If previous stage is low
@@ -115,7 +115,7 @@ int schmitt_output(float inputAmp, float nomThreshold, float margin, int recentS
         newThreshold = nomThreshold - (float)margin/2;
     }
     // Calculate the output
-    if (inputAmp > newThreshold){ // if input is higher than threshold
+    if ((inputAmp > newThreshold && recentState == 1) || (recentState == 0 && inputAmp >= newThreshold)){ // if input is higher than threshold
         return 1; // high signal
     } else { // if input is lower than threshold
         return 0; // low signal
